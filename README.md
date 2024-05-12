@@ -32,4 +32,4 @@ Am  ales să facem aceste teste deoarece sunt esențiale pentru asigurarea calit
 În urma comparației cu tool-ul ChatGPT am observat că în testarea software poate aduce multiple beneficii deoarece respectă structura framework-urilor și oferă indicații pentru rezolvarea erorilor dar nu oferă o soluție completă. Testele generate de AI nu au trecut din prima, deoarece este nevoie de o cunoaștere foarte detaliată a aplicației și a structurii acesteia pentru a putea crea testele adecvate. Concluzia noastră este că, o abordare hibridă care integrează atât testele autogenerate, cât și cele manuale ofera o bună acoperire și o asigurare a calității în testarea software. 
 
 ## Link-uri 
-
+Inregistrare teste - https://drive.google.com/file/d/1uVNk43JzxsyrpZd5zvs7feyK_YeChg90/view?usp=sharing
