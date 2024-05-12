@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.DatePicker;
 
 import androidx.test.espresso.Espresso;
@@ -32,7 +33,9 @@ import com.example.myapplication.UploadActivity;
 
 import org.hamcrest.Matchers;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -42,34 +45,50 @@ import java.util.Calendar;
 @RunWith(AndroidJUnit4.class)
 public class UploadEspressoTest {
 
+    private static long startTime;
+    private static long endTime;
+    private static long testStartTime;
+    private static long testEndTime;
+
     @Rule
     public ActivityScenarioRule<UploadActivity> activityScenarioRule = new ActivityScenarioRule<>(UploadActivity.class);
 
+    @BeforeClass
+    public static void startTimer() {
+        startTime = System.nanoTime();
+    }
+
+    @AfterClass
+    public static void endTimer() {
+        endTime = System.nanoTime();
+        long duration = (endTime - startTime) / 1_000_000; // Convert to milliseconds
+        Log.d("EspressoTest", "Total duration for all tests: " + duration + " ms");
+    }
+
     @Before
     public void setUp() {
-        Intents.init();  // Inițializează Intents înainte de fiecare test
+        Intents.init();
+        testStartTime = System.nanoTime();
     }
 
     @After
     public void tearDown() {
-        Intents.release();  // Eliberează Intents după fiecare test
+        testEndTime = System.nanoTime();
+        long testDuration = (testEndTime - testStartTime) / 1_000_000; // Convert to milliseconds
+        Log.d("EspressoTest", "Test duration: " + testDuration + " ms");
+        Intents.release();
     }
 
     @Test
     public void testSelectImage() {
         // Prepară un rezultat de intent cu o imagine mock
         Uri imageUri = Uri.parse("file:///sdcard/Download/food.png");
-
         Intent resultData = new Intent();
         resultData.setData(imageUri);
         Instrumentation.ActivityResult result = new Instrumentation.ActivityResult(Activity.RESULT_OK, resultData);
 
-        // Intenționăm să răspundem cu acest rezultat când se lansează un picker de imagini
         intending(not(isInternal())).respondWith(result);
-
-        // Simulează click pe ImageView pentru a lansa picker-ul de imagini
         onView(withId(R.id.uploadImage)).perform(click());
-
     }
 
     @Test
@@ -92,30 +111,23 @@ public class UploadEspressoTest {
 
     @Test
     public void testSelectTodayDate() {
-        // Deschide dialogul DatePicker
         Espresso.onView(withId(R.id.buttonDate))
                 .perform(ViewActions.click());
-
-        // Selectează data curentă în dialogul DatePicker
         Calendar cal = Calendar.getInstance();
         int year = cal.get(Calendar.YEAR);
         int month = cal.get(Calendar.MONTH);
         int day = cal.get(Calendar.DAY_OF_MONTH);
 
-        // Setează data în DatePickerDialog
         Espresso.onView(ViewMatchers.withClassName(Matchers.equalTo(DatePicker.class.getName())))
                 .inRoot(RootMatchers.isDialog())
                 .perform(PickerActions.setDate(year, month + 1, day));
 
-        // Apasă pe butonul OK pentru a confirma data
         Espresso.onView(withId(android.R.id.button1))
                 .inRoot(RootMatchers.isDialog())
                 .perform(ViewActions.click());
 
-        // Verifică dacă TextView-ul care arată data a fost actualizat
         String expectedDate = String.format("%02d-%02d-%d", day, month + 1, year);
         Espresso.onView(withId(R.id.uploadDate))
                 .check(ViewAssertions.matches(ViewMatchers.withText(expectedDate)));
     }
-
 }

@@ -38,6 +38,7 @@ public class DeleteUIAutomatorTest {
 
     @Test
     public void testDeleteAction() throws UiObjectNotFoundException {
+        long startTime = System.nanoTime();
 
         device.wait(Until.hasObject(By.pkg("com.example.myapplication")), 5000);
 
@@ -57,5 +58,9 @@ public class DeleteUIAutomatorTest {
         } else {
             System.out.println("Detail view is still visible. Deletion may not have been successful.");
         }
+
+        long endTime = System.nanoTime(); // Oprire cronometrare
+        long duration = (endTime - startTime) / 1_000_000; // Convertire nanosecunde în milisecunde
+        System.out.println("Test duration: " + duration + " ms");
     }
 }

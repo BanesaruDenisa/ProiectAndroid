@@ -57,6 +57,7 @@ public class DeleteEspressoTest {
 
     @Test
     public void testDeleteFunctionality() throws InterruptedException {
+        long startTime = System.nanoTime();
         onView(withId(R.id.fab_menu)).perform(click());
         Thread.sleep(2000);
         //onView(withId(R.id.deleteButton)).perform(click());
@@ -65,6 +66,10 @@ public class DeleteEspressoTest {
 
         // Verifică dacă RecyclerView-ul din MainActivity este vizibil
         onView(withId(R.id.recyclerView)).check(matches(isDisplayed()));
+
+        long endTime = System.nanoTime(); // Oprire cronometrare
+        long duration = (endTime - startTime) / 1_000_000; // Convertire nanosecunde în milisecunde
+        System.out.println("Test duration: " + duration + " ms");
     }
 
     @After

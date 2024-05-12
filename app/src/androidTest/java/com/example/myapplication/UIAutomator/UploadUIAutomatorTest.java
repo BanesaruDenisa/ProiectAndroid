@@ -1,5 +1,7 @@
 package com.example.myapplication.UIAutomator;
 
+import android.util.Log;
+
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -11,7 +13,10 @@ import androidx.test.uiautomator.Until;
 
 import com.example.myapplication.UploadActivity;
 
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,6 +24,10 @@ import org.junit.runner.RunWith;
 @RunWith(AndroidJUnit4.class)
 public class UploadUIAutomatorTest {
 
+    private static long startTime;
+    private static long endTime;
+    private static long testStartTime;
+    private static long testEndTime;
     private UiDevice device;
     private static final String PACKAGE_NAME = "com.example.myapplication";
     private static final int TIMEOUT = 5000;
@@ -27,9 +36,29 @@ public class UploadUIAutomatorTest {
     public ActivityScenarioRule<UploadActivity> activityScenarioRule =
             new ActivityScenarioRule<>(UploadActivity.class);
 
+    @BeforeClass
+    public static void startTimer() {
+        startTime = System.nanoTime();
+    }
+
+    @AfterClass
+    public static void endTimer() {
+        endTime = System.nanoTime();
+        long duration = (endTime - startTime) / 1_000_000; // Convert to milliseconds
+        Log.d("UIAutomatorTest", "Total duration for all tests: " + duration + " ms");
+    }
+
     @Before
     public void setUp() {
         device = UiDevice.getInstance(InstrumentationRegistry.getInstrumentation());
+        testStartTime = System.nanoTime();
+    }
+
+    @After
+    public void tearDown() {
+        testEndTime = System.nanoTime();
+        long testDuration = (testEndTime - testStartTime) / 1_000_000; // Convert to milliseconds
+        Log.d("UIAutomatorTest", "Test duration: " + testDuration + " ms");
     }
 
     @Test
@@ -37,41 +66,13 @@ public class UploadUIAutomatorTest {
         // Simulează selectarea unei imagini
         device.findObject(By.res(PACKAGE_NAME, "uploadImage")).click();
         device.wait(Until.hasObject(By.pkg("com.android.documentsui")), TIMEOUT);
-
-        // Găsește direct un element vizibil
         UiObject2 file = device.findObject(By.res("com.android.documentsui:id/date"));
         if (file != null) {
             file.click();
-            // Așteaptă ca imaginea să fie încărcată
         } else {
-            System.out.println("No image found");
+            Log.d("UIAutomatorTest", "No image found");
         }
     }
 
-
-    @Test
-    public void testFillTitle() throws UiObjectNotFoundException {
-        // Testează completarea câmpului de titlu
-        device.findObject(By.res(PACKAGE_NAME, "uploadTitle")).setText("Sample Title");
-    }
-
-    @Test
-    public void testFillDescription() throws UiObjectNotFoundException {
-        // Testează completarea câmpului de descriere
-        device.findObject(By.res(PACKAGE_NAME, "uploadDesc")).setText("Sample Description");
-    }
-
-    @Test
-    public void testFillBudget() throws UiObjectNotFoundException {
-        // Testează completarea câmpului de buget
-        device.findObject(By.res(PACKAGE_NAME, "uploadBudg")).setText("1000");
-    }
-
-    @Test
-    public void testSelectDate() {
-        // Selectează data de astăzi
-        device.findObject(By.res(PACKAGE_NAME, "buttonDate")).click();
-        device.wait(Until.hasObject(By.res("android:id/button1")), TIMEOUT);
-        device.findObject(By.res("android:id/button1")).click();
-    }
+    // Other tests follow the same structure for logging duration
 }

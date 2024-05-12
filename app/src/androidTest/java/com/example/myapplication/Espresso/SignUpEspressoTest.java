@@ -35,6 +35,8 @@ public class SignUpEspressoTest {
 
     @Test
     public void testUserSignUp() {
+        long startTime = System.nanoTime(); // Începe cronometrarea
+
         // Introducere detalii utilizator
         onView(withId(R.id.signup_email)).perform(typeText("test@example.com"), closeSoftKeyboard());
         onView(withId(R.id.signup_password)).perform(typeText("password123"), closeSoftKeyboard());
@@ -44,6 +46,10 @@ public class SignUpEspressoTest {
 
         // Verifică dacă navighează către activitatea următoare
         intending(hasComponent(LoginActivity.class.getName()));
+
+        long endTime = System.nanoTime(); // Oprire cronometrare
+        long duration = (endTime - startTime) / 1_000_000; // Convertire nanosecunde în milisecunde
+        System.out.println("Test duration: " + duration + " ms");
     }
 
     @After
@@ -51,67 +57,3 @@ public class SignUpEspressoTest {
         Intents.release(); // Curăță Intents după fiecare test
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//@RunWith(AndroidJUnit4.class)
-//public class SignUpEspressoTest {
-//
-//    @Rule
-//    public ActivityScenarioRule<SignUpActivity> activityScenarioRule = new ActivityScenarioRule<>(SignUpActivity.class);
-//
-//    // Pentru a înregistra
-//    //IdlingRegistry.getInstance().register(meuIdlingResource);
-//    ToastIdlingResource toastIdlingResource = new ToastIdlingResource();
-//
-//    @Before
-//    public void setUp() {
-//        toastIdlingResource = new ToastIdlingResource();
-//        IdlingRegistry.getInstance().register(toastIdlingResource);
-//    }
-//
-//    @Test
-//    public void testUserSignUp() {
-//        onView(ViewMatchers.withId(R.id.signup_email)).perform(typeText("test@example.com"), closeSoftKeyboard());
-//        onView(withId(R.id.signup_password)).perform(typeText("password123"), closeSoftKeyboard());
-//        onView(withId(R.id.signup_button)).perform(click());
-//
-//        try {
-//            Thread.sleep(2000); // Așteaptă 2 secunde pentru ca Toast-ul să fie afișat
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//        onView(withText("SignUp Successful")).inRoot(new ToastMatcher()).check(matches(isDisplayed()));
-//    }
-//
-//    @After
-//    public void tearDown() {
-//        if (toastIdlingResource != null) {
-//            IdlingRegistry.getInstance().unregister(toastIdlingResource);
-//        }
-//    }
-//}
-//    @Test
-//    public void testGoogleSignIn() {
-//        Intents.init();
-//        try {
-//            onView(withId(R.id.googleBtn)).perform(click());
-//            intended(hasAction(equalTo(Intent.ACTION_CHOOSER)));
-//        } finally {
-//            Intents.release();
-//        }
-//    }

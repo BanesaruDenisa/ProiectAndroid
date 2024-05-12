@@ -48,6 +48,7 @@ public class SignUpUIAutomatorTest {
 
     @Test
     public void testSignUp() throws UiObjectNotFoundException {
+        long startTime = System.nanoTime();
         // Așteaptă și verifică că câmpul de email este prezent
         UiObject2 emailField = device.wait(Until.findObject(By.res("com.example.myapplication:id/signup_email")), 5000);
         if (emailField == null) {
@@ -72,6 +73,10 @@ public class SignUpUIAutomatorTest {
 
         // Verifică dacă interfața de login este afișată
         assertTrue("Login screen did not display", isLoginDisplayed);
+
+        long endTime = System.nanoTime(); // Oprire cronometrare
+        long duration = (endTime - startTime) / 1_000_000; // Convertire nanosecunde în milisecunde
+        System.out.println("Test duration: " + duration + " ms");
     }
 
 }
